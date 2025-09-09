@@ -58,4 +58,8 @@ numero	{digito}+
 
 [\t]+		{update_col(); }
 \n			{update_line(); }
+
+{
+		std::cerr << "Erro na linha " << line_num << ", coluna " << col_num << ": caractere inesperado " << yytext <<"'\n";
+}
 %%
