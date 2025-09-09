@@ -23,6 +23,18 @@ enum TokenType {
 		TOKEN_OR,
 		TOKEN_NOT,
 		TOKEN_DIV,
+
+		// Identificador e Número
+		TOKEN_ID,
+		TOKEN_NUM,
+
+		// Símbolos especiais
+		TOKEN_ASSIGN,		// :=
+		TOKEN_NEQ,			// <>
+		TOKEN_LT,           // <
+		TOKEN_LTE,          // <=
+		TOKEN_GT,          	// >
+		TOKEN_GTE,			// >=
 };
 
 #endif
