@@ -25,13 +25,24 @@ numero	{digito}+
 %%
 "program"	{update_col(); return TOKEN_PROGRAM; }
 "var"		{update_col(); return TOKEN_VAR; }
-"integer"
-"boolean"
-"procedure"
-"function"
-"begin"
-"end"
-"if"
+"integer"	{update_col(); return TOKEN_INTEGER; }
+"boolean"	{update_col(); return TOKEN_BOOLEAN; }
+"procedure" {update_col(); return TOKEN_PROCUDERE; }
+"function"	{update_col(); return TOKEN_FUNCTION; }
+"begin"		{update_col(); return TOKEN_BEGIN; }
+"end"		{update_col(); return TOKEN_END; }
+"if"		{update_col(); return TOKEN_IF; }
+"then"		{update_col(); return TOEKN_THEN; }
+"else"		{update_col(); return TOKEN_ELSE; }
+"read"		{rpdate_col(); return TOKEN_READ; }
+"false"		{update_col(); return TOKEN_FALSE; }
+"true"		{update_col(); return TOKEN_TRUE; }
+"while"		{update_col(); return TOKEN_WHILE; }
+"do"		{update_col(); return TOKEN_DO; }
+"write"		{update_col(); return TOKEN_WRITE; }
+"or"		{update_col(); return TOKEN_OR; }
+"not"		{update_col(); return TOKEN_NOT; }
+"div"		{update_col(); return TOKEN_DIV; }
 
 [\t]+		{update_col(); }
 \n			{update_line(); }
