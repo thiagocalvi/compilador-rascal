@@ -1,0 +1,11 @@
+program T1;
+var
+    idade, ano: integer;
+    eh_estudante: boolean;
+
+begin
+    read(idade, ano);
+    eh_estudante := true;
+    idade := idade + 1;
+    write(ano, idade, eh_estudante);
+end.
