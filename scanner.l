@@ -44,6 +44,18 @@ numero	{digito}+
 "not"		{update_col(); return TOKEN_NOT; }
 "div"		{update_col(); return TOKEN_DIV; }
 
+{id}		{update_col(); return TOKEN_ID; }
+{numero}	{update_col(); return TOKEN_NUM; }
+
+":="  		{update_col(); return TOKEN_ASSING; }
+"<>"		{update_col(); return TOKEN_NEQ; }
+"<"			{update_col(); return TOKEN_LT; }
+"<="		{update_col(); return TOKEN_LTE; }
+">"			{update_col(); return TOKEN_GT; }
+">="		{update_col(); return TOKEN_GTE; }	
+
+"+"|"-"|"*"|"="|"<"|">"|"("|")"|";"|","|":"|"." { update_col(); return yytext[0]; }
+
 [\t]+		{update_col(); }
 \n			{update_line(); }
 %%
