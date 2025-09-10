@@ -25,7 +25,7 @@ void update_col(yyFlexLexer* scanner) {
 
 letra	[a-zA-Z]
 digito	[0-9]
-id		{letra}({letra}|{digito}|_)
+id		{letra}({letra}|{digito}|_)*
 numero	{digito}+
 
 %%
@@ -53,7 +53,7 @@ numero	{digito}+
 {id}		{update_col(this); return TOKEN_ID; }
 {numero}	{update_col(this); return TOKEN_NUM; }
 
-":="  		{update_col(this); return TOKEN_ASSING; }
+":="  		{update_col(this); return TOKEN_ASSIGN; }
 "<>"		{update_col(this); return TOKEN_NEQ; }
 "<"			{update_col(this); return TOKEN_LT; }
 "<="		{update_col(this); return TOKEN_LTE; }
@@ -62,13 +62,16 @@ numero	{digito}+
 
 "+"|"-"|"*"|"="|"<"|">"|"("|")"|";"|","|":"|"." { update_col(this); return yytext[0]; }
 
-[\t]+		{update_col(this); }
+[ \t]+		{update_col(this); }
 \n			{update_line(); }
+
+<<EOF>> 	{return 0;}
 
 .	{
 		std::cerr << "Erro na linha " << line_num << ", coluna " << col_num << ": caractere inesperado " << YYText() <<"'\n";
 		update_col(this);
 }
+
 %%
 
 int yyFlexLexer::yywrap() {

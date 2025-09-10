@@ -21,6 +21,7 @@ enum TokenType {
 		TOKEN_DO,
 		TOKEN_WRITE,
 		TOKEN_OR,
+		TOKEN_AND,
 		TOKEN_NOT,
 		TOKEN_DIV,
 
@@ -29,7 +30,7 @@ enum TokenType {
 		TOKEN_NUM,
 
 		// Símbolos especiais
-		TOKEN_ASSING,		// :=
+		TOKEN_ASSIGN,		// :=
 		TOKEN_NEQ,			// <>
 		TOKEN_LT,           // <
 		TOKEN_LTE,          // <=
