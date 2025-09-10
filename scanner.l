@@ -1,9 +1,11 @@
 %{
 #include <iostream>
+#include <string.h>
 #include "tokens.hpp"
-}%
 
-%option c++ //Gerar scanner em C++
+%option c++ header-file="scanner.hpp"
+
+extern FILE *yyin;
 
 int line_num = 1;
 int col_num = 1;
@@ -16,6 +18,8 @@ void update_line() {
 void update_col() {
 		col_num += yyleng;
 }
+
+%}
 
 letra	[a-zA-Z]
 digito	[0-9]
@@ -34,12 +38,12 @@ numero	{digito}+
 "if"		{update_col(); return TOKEN_IF; }
 "then"		{update_col(); return TOEKN_THEN; }
 "else"		{update_col(); return TOKEN_ELSE; }
-"read"		{rpdate_col(); return TOKEN_READ; }
-"false"		{update_col(); return TOKEN_FALSE; }
-"true"		{update_col(); return TOKEN_TRUE; }
 "while"		{update_col(); return TOKEN_WHILE; }
 "do"		{update_col(); return TOKEN_DO; }
+"read"		{rpdate_col(); return TOKEN_READ; }
 "write"		{update_col(); return TOKEN_WRITE; }
+"true"		{update_col(); return TOKEN_TRUE; }
+"false"		{update_col(); return TOKEN_FALSE; }
 "or"		{update_col(); return TOKEN_OR; }
 "not"		{update_col(); return TOKEN_NOT; }
 "div"		{update_col(); return TOKEN_DIV; }
