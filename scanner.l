@@ -3,8 +3,6 @@
 #include <string.h>
 #include "tokens.hpp"
 
-%option c++ header-file="scanner.hpp"
-
 extern FILE *yyin;
 
 int line_num = 1;
@@ -21,6 +19,8 @@ void update_col() {
 
 %}
 
+%option c++ header-file="scanner.hpp"
+
 letra	[a-zA-Z]
 digito	[0-9]
 id		{letra}({letra}|{digito}|_)
@@ -31,16 +31,16 @@ numero	{digito}+
 "var"		{update_col(); return TOKEN_VAR; }
 "integer"	{update_col(); return TOKEN_INTEGER; }
 "boolean"	{update_col(); return TOKEN_BOOLEAN; }
-"procedure" {update_col(); return TOKEN_PROCUDERE; }
+"procedure" {update_col(); return TOKEN_PROCEDURE; }
 "function"	{update_col(); return TOKEN_FUNCTION; }
 "begin"		{update_col(); return TOKEN_BEGIN; }
 "end"		{update_col(); return TOKEN_END; }
 "if"		{update_col(); return TOKEN_IF; }
-"then"		{update_col(); return TOEKN_THEN; }
+"then"		{update_col(); return TOKEN_THEN; }
 "else"		{update_col(); return TOKEN_ELSE; }
 "while"		{update_col(); return TOKEN_WHILE; }
 "do"		{update_col(); return TOKEN_DO; }
-"read"		{rpdate_col(); return TOKEN_READ; }
+"read"		{update_col(); return TOKEN_READ; }
 "write"		{update_col(); return TOKEN_WRITE; }
 "true"		{update_col(); return TOKEN_TRUE; }
 "false"		{update_col(); return TOKEN_FALSE; }
@@ -63,7 +63,8 @@ numero	{digito}+
 [\t]+		{update_col(); }
 \n			{update_line(); }
 
-{
-		std::cerr << "Erro na linha " << line_num << ", coluna " << col_num << ": caractere inesperado " << yytext <<"'\n";
+.	{
+		std::cerr << "Erro na linha " << line_num << ", coluna " << col_num << ": caractere inesperado " << YYText() <<"'\n";
+		update_col();
 }
 %%

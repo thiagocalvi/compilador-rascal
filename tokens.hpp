@@ -29,7 +29,7 @@ enum TokenType {
 		TOKEN_NUM,
 
 		// Símbolos especiais
-		TOKEN_ASSIGN,		// :=
+		TOKEN_ASSING,		// :=
 		TOKEN_NEQ,			// <>
 		TOKEN_LT,           // <
 		TOKEN_LTE,          // <=
