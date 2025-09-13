@@ -1,36 +1,49 @@
 #include <iostream>
+#include <fstream>
 #include <string.h>
 #include <stdio.h>
 
 #include "scanner.hpp"
 #include "tokens.hpp"
 
-FILE *yyin;
-
 extern int line_num;
 extern int col_num;
 
 int main(int argc, char **argv) {
+		std::istream* input_stream;
+		std::ifstream file_stream;
+
 		if (argc > 1) {
-				yyin = fopen(argv[1], "r");
-				if (!yyin) {
+				file_stream.open(argv[1]);
+
+				if (!file_stream.is_open()) {
 						std::cerr << "Erro: não foi possível abrir o arquivo " << argv[1] << "\n";
 						return 1;
-				}
+				} 
+
+				input_stream = &file_stream;
 		}
 
 		yyFlexLexer scanner;
+		
+		scanner.yyrestart(input_stream);
+
 		int token;
-
-		while (token = scanner.yylex()) {
+				
+		while ((token = scanner.yylex())) {
 				int token_col = col_num - strlen(scanner.YYText());
-
+				
 				std::cout << "Token: " << token;
-				std::cout << "\t[Linha: " << line_num << ", Coluna: " << token_col << "\n]"; 
+				
+				if (token == TOKEN_ID || token == TOKEN_NUM) {
+						std::cout << " (" << scanner.YYText() << ") ";
+				}
+
+				std::cout << "\t[Linha: " << line_num << ", Coluna: " << token_col << "]\n"; 
 		}
 
-		if (yyin != stdin) {
-				fclose(yyin);
+		if (argc > 1) {
+				file_stream.close();
 		}
 
 		return 0;
