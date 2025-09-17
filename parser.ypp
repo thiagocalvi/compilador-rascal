@@ -12,10 +12,14 @@ extern int line_num;
 extern int col_num;
 %}
 
+%skeleton "larlr1.cc"
+%require "3.2"
 %language "c++"
+%define api.token.raw
+%define api.token.constructor
 
 // Tokens
-
+%token TOKEN_ID
 
 // Regras da Gramática
 %%
