@@ -11,7 +11,6 @@ void yyerror(const char* s) {
 
 %}
 
-// Tokens
 %token TOKEN_PROGRAM
 %token TOKEN_VAR
 %token TOKEN_INTEGER
@@ -55,9 +54,7 @@ program:
     	;
 
 bloco:
-		secao_declaracao_variaveis
-		| secao_declaracao_subrotinas
-		| comando_composto
+		secao_declaracao_variaveis secao_declaracao_subrotinas comando_composto
 		;
 
 secao_declaracao_variaveis:
