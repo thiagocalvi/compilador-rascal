@@ -32,6 +32,7 @@ numero	{digito}+
 "true"		{update_col(yyleng); return TOKEN_TRUE; }
 "false"		{update_col(yyleng); return TOKEN_FALSE; }
 "or"		{update_col(yyleng); return TOKEN_OR; }
+"and"		{update_col(yyleng); return TOKEN_AND; }
 "not"		{update_col(yyleng); return TOKEN_NOT; }
 "div"		{update_col(yyleng); return TOKEN_DIV; }
 
@@ -40,12 +41,10 @@ numero	{digito}+
 
 ":="  		{update_col(yyleng); return TOKEN_ASSIGN; }
 "<>"		{update_col(yyleng); return TOKEN_NEQ; }
-"<"         { update_col(yyleng); return TOKEN_LT; }
 "<="		{update_col(yyleng); return TOKEN_LTE; }
-">"         { update_col(yyleng); return TOKEN_GT; }
 ">="		{update_col(yyleng); return TOKEN_GTE; }	
 
-"+"|"-"|"*"|"="|"("|")"|";"|","|":"|"." { update_col(yyleng); return yytext[0]; }
+"+"|"-"|"*"|"="|"("|")"|";"|","|":"|"."|"<"|">" { update_col(yyleng); return yytext[0]; }
 
 [ \t]+		{update_col(yyleng); }
 \n			{update_line(); }
