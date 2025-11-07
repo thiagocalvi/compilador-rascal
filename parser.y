@@ -1,14 +1,13 @@
 %{
 #include <iostream>
-#include <string.h>
+#include <cstdio>
 #include "wrapper.h"
 
 extern FILE* yyin;
 
 void yyerror(const char* s) {
-		std::cerr << "Erro de sintaxe, linha: " << line_num << "col: " << col_num << " - " << s << std::endl;
+    std::cerr << "Erro de sintaxe, linha: " << line_num << " col: " << col_num << " - " << s << std::endl;
 };
-
 %}
 
 %token TOKEN_PROGRAM
@@ -32,16 +31,12 @@ void yyerror(const char* s) {
 %token TOKEN_AND
 %token TOKEN_NOT
 %token TOKEN_DIV
-
 %token TOKEN_ID
 %token TOKEN_NUM
-
 %token TOKEN_ASSIGN
 %token TOKEN_NEQ
 %token TOKEN_LTE
 %token TOKEN_GTE
-
-%token '+' '-' '*' '=' '(' ')' ';' ',' ':' '.' '<' '>'
 
 // Precedência e associatividade
 %left TOKEN_OR
@@ -51,165 +46,204 @@ void yyerror(const char* s) {
 %left '*' TOKEN_DIV
 %right TOKEN_NOT
 %right UMINUS
-
+%nonassoc TOKEN_THEN
+%nonassoc TOKEN_ELSE
 
 // Regras da Gramática
 %%
+
 program:
-		TOKEN_PROGRAM TOKEN_ID ';' bloco '.'
-    	;
+    TOKEN_PROGRAM TOKEN_ID ';' bloco '.'
+    ;
 
 bloco:
-		secao_declaracao_variaveis secao_declaracao_subrotinas comando_composto
-		;
-
-secao_declaracao_variveis_opt:
-		
-		| secao_declaracao_variaveis
-		;
+    comando_composto
+    | secao_declaracao_variaveis comando_composto
+    | secao_declaracao_subrotinas comando_composto
+    | secao_declaracao_variaveis secao_declaracao_subrotinas comando_composto
+    ;
 
 secao_declaracao_variaveis:
-		TOKEN_VAR declaracao_variaveis ';'
-		| declaracao_variaveis ';'
-		;
+    TOKEN_VAR declaracao_variaveis_lista
+    ;
+
+declaracao_variaveis_lista:
+    declaracao_variaveis ';'
+    | declaracao_variaveis_lista declaracao_variaveis ';'
+    ;
 
 declaracao_variaveis:
-		lista_identificadores ':' tipo
-		;
+    lista_identificador ':' tipo
+    ;
 
-lista_identificadores:
-					 TOKEN_ID
-					 | lista_identificadores ',' TOKEN_ID
-					 ;
-		
+lista_identificador:
+    TOKEN_ID
+    | lista_identificador ',' TOKEN_ID
+    ;
+
 tipo:
-	TOKEN_BOOLEAN 
-	| TOKEN_INTEGER
-	;
+    TOKEN_BOOLEAN
+    | TOKEN_INTEGER
+    ;
 
 secao_declaracao_subrotinas:
+    declaracao_procedimento ';'
+    | declaracao_funcao ';'
+    | secao_declaracao_subrotinas declaracao_procedimento ';'
+    | secao_declaracao_subrotinas declaracao_funcao ';'
+    ;
+
 declaracao_procedimento:
+    TOKEN_PROCEDURE TOKEN_ID ';' bloco_subrot
+    | TOKEN_PROCEDURE TOKEN_ID parametros_formais ';' bloco_subrot
+    ;
+
 declaracao_funcao:
+    TOKEN_FUNCTION TOKEN_ID ':' tipo ';' bloco_subrot
+    | TOKEN_FUNCTION TOKEN_ID parametros_formais ':' tipo ';' bloco_subrot
+    ;
+
 bloco_subrot:
+    comando_composto
+    | secao_declaracao_variaveis comando_composto
+    ;
+
 parametros_formais:
+    '(' declaracao_parametros_lista ')'
+    ;
+
+declaracao_parametros_lista:
+    declaracao_parametros
+    | declaracao_parametros_lista ';' declaracao_parametros
+    ;
+
 declaracao_parametros:
-		lista_identificadores ':' tipo
-		;
+    lista_identificador ':' tipo
+    ;
 
 comando_composto:
-		TOKEN_BEGIN comando_lista TOKEN_END
+    TOKEN_BEGIN comando_lista TOKEN_END
+    ;
 
 comando_lista:
-		comando
-		| comando_lista ';' comando
-		;
+    comando
+    | comando_lista ';' comando
+    ;
 
 comando:
-	   atribuicao
-	   | chamada_procedimento
-	   | condicional
-	   | repeticao
-	   | leitura
-	   | escrita
-	   | comando_composto
-	   ;
+    atribuicao
+    | chamada_procedimento
+    | condicional
+    | repeticao
+    | leitura
+    | escrita
+    | comando_composto
+    ;
 
 atribuicao:
-		TOKEN_ID TOKEN_ASSIGN expressao
-		;
+    TOKEN_ID TOKEN_ASSIGN expressao
+    ;
 
 chamada_procedimento:
-		TOKEN_ID
-		| TOKEN_ID '(' lista_expressoes ')'
+    TOKEN_ID '(' lista_expressao_opcional ')'
+    ;
 
 condicional:
-		TOKEN_IF expressao TOKEN_THEN comando 
-		| TOKEN_IF expressap TOKEN_THEN comando TOKEN_ELSE comando
-		;
+    TOKEN_IF expressao TOKEN_THEN comando
+    | TOKEN_IF expressao TOKEN_THEN comando TOKEN_ELSE comando
+    ;
 
 repeticao:
-		TOKEN_WHILE expressao TOKEN_DO comando
-		;
+    TOKEN_WHILE expressao TOKEN_DO comando
+    ;
 
 leitura:
-		TOKEN_READ '(' lista_identificadores ')'
-		;
+    TOKEN_READ '(' lista_identificador ')'
+    ;
 
 escrita:
-		TOKEN_WRITE '(' lista_expressoes ')'
-		;
+    TOKEN_WRITE '(' lista_expressao ')'
+    ;
 
-lista_expressoes:
-		expressao
-		| lista_expressoes ',' expressao
-		;
+lista_expressao:
+    expressao
+    | lista_expressao ',' expressao
+    ;
 
-expressoes:
-		expressao_simples
-		| expressao_simples relacao expressao_simples
-		;
+expressao:
+    expressao_simples
+    | expressao_simples relacao expressao_simples
+    ;
 
 relacao:
-		'='
-		| TOKEN_NEQ
-		| '<'
-		| TOKEN_LTE
-		| '>'
-		| TOKEN_GTE
-		;
+    '='
+    | TOKEN_NEQ
+    | '<'
+    | TOKEN_LTE
+    | '>'
+    | TOKEN_GTE
+    ;
 
 expressao_simples:
-		termo
-		| expressao_simples '+' termo
-		| expressao_simpels '-' termo
-		| expressao_simples TOKEN_OR termo
-		;
- 
+    termo
+    | expressao_simples '+' termo
+    | expressao_simples '-' termo
+    | expressao_simples TOKEN_OR termo
+    ;
+
 termo:
-		fator
-		| termo '*' fator
-		| termo TOKEN_DIV fator
-		| termo TOKEN_AND fator
-		;
+    fator
+    | termo '*' fator
+    | termo TOKEN_DIV fator
+    | termo TOKEN_AND fator
+    ;
 
 fator:
-		variavel
-		| TOKEN_NUM
-		| logico
-		| chamada_funcao
-		| '(' expressao ')'
-		| TOKEN_NOT fator
-		//| '-' fator %prec UMINUS
-		;
+    variavel
+    | TOKEN_NUM
+    | logico
+    | chamada_funcao
+    | '(' expressao ')'
+    | TOKEN_NOT fator
+    | '-' fator %prec UMINUS
+    ;
 
 variavel:
-		TOKEN_ID
-		;
+    TOKEN_ID
+    ;
 
 logico:
-		TOKEN_FALSE
-		| TOKEN_TRUE
-		;
+    TOKEN_FALSE
+    | TOKEN_TRUE
+    ;
 
 chamada_funcao:
-			TOKEN_ID '(' lista_expressoes ')'
-			;
+    TOKEN_ID '(' lista_expressao_opcional ')'
+    ;
+
+lista_expressao_opcional:
+    /* empty */
+    | lista_expressao
+    ;
 
 %%
 
 int main(int argc, char** argv) {
-		if (argc > 1) {
-				yyin = fopen(argv[1], "r");
-				if (!yyin) {
-						std::cerr << "Erro ao abrir arquivo: " << argv[1] << std::endl;
-						return 1;
-				}
-
-		} else {
-				yyin = stdin;
-		}
-
-		int result = yyparse();
-		fclose(yyin);
-		return result;
+    if (argc > 1) {
+        yyin = fopen(argv[1], "r");
+        if (!yyin) {
+            std::cerr << "Erro ao abrir arquivo: " << argv[1] << std::endl;
+            return 1;
+        }
+    } else {
+        yyin = stdin;
+    }
+    
+    int result = yyparse();
+    
+    if (yyin != stdin) {
+        fclose(yyin);
+    }
+    
+    return result;
 }

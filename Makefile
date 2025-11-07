@@ -3,7 +3,7 @@ BISON = bison
 FLEX = flex
 
 TARGET = compilador
-SOURCES = parser.tab.cpp lex.yy.c globals.cpp
+SOURCES = parser.tab.cpp lex.yy.c
 
 all: $(TARGET)
 

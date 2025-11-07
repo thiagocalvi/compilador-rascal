@@ -46,16 +46,10 @@ numero	{digito}+
 
 "+"|"-"|"*"|"="|"("|")"|";"|","|":"|"."|"<"|">" { update_col(yyleng); return yytext[0]; }
 
-[ \t]+		{update_col(yyleng); }
+[ \t\r]+	{update_col(yyleng); }
 \n			{update_line(); }
 
 <<EOF>> 	{return 0; }
-
-.	{
-		std::cerr << "Erro na linha " << line_num << ", coluna " << col_num << ": caractere inesperado " << yytext[0] << std::endl;
-		update_col(yyleng);
-		return yytext[0];
-}
 
 %%
 
