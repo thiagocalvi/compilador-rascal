@@ -4,7 +4,6 @@
 #include "wrapper.h"
 #include "parser.tab.hpp"
 
-int error_count = 0; //contador global de erros
 %}
 
 %option noyywrap
@@ -62,6 +61,7 @@ numero	{digito}+
 
 int line_num = 1;
 int col_num = 1;
+int error_count = 0;
 
 void update_line() {
 		line_num++;
