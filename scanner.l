@@ -50,7 +50,7 @@ numero	{digito}+
 \n			{update_line(); }
 
 .			{
-				std::cerr << "ERRO LÉXICO [linha " << line_num << " coluna " << col_num << "]: Caractere inválido '" << yytext[0] << "'" << std::endl;
+				std::cerr << "ERRO LÉXICO [linha " << line_num << ", coluna " << col_num << "]: Caractere inválido '" << yytext[0] << "'" << std::endl;
 				error_count++;
 				update_col(yyleng);
 			}

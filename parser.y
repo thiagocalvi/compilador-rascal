@@ -4,10 +4,15 @@
 #include "wrapper.h"
 
 extern FILE* yyin;
+extern char* yytext;
+bool var_declared = false; // Flag para controlar um único bloco var
 
 void yyerror(const char* s) {
-    std::cerr << "Erro de sintaxe, linha: " << line_num << " col: " << col_num << " - " << s << std::endl;
+    error_count++;
+    std::cerr << "ERRO SINTÁTICO [linha " << line_num << ", coluna " << col_num << "]: " << s << std::endl;
+
 };
+
 %}
 
 %token TOKEN_PROGRAM
@@ -73,7 +78,8 @@ declaracao_variaveis_lista:
     ;
 
 declaracao_variaveis:
-    lista_identificador ':' tipo
+    lista_identificador ':' tipo 
+    | lista_identificador error tipo { yyerror("Esperado ':' entre identificadores e tipo."); yyerrok; }
     ;
 
 lista_identificador:
@@ -142,6 +148,7 @@ comando:
 
 atribuicao:
     TOKEN_ID TOKEN_ASSIGN expressao
+    | TOKEN_ID error expressao { yyerror("Esperado ':=' ao invés de outro símbolo na atribuição."); yyerrok; }
     ;
 
 chamada_procedimento:
@@ -238,12 +245,18 @@ int main(int argc, char** argv) {
     } else {
         yyin = stdin;
     }
+
+    std::cout << "=== Iniciando compilação ===" << std::endl;
     
     int result = yyparse();
     
     if (yyin != stdin) {
         fclose(yyin);
     }
+
+    std::cout << "\n=== Compilação finalizada ===" << std::endl;
+    std::cout << "Total de erros encontrados: " << error_count << std::endl;
+    
     
     return result;
 }
