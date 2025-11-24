@@ -3,8 +3,8 @@
 #include <cstdio>
 #include "wrapper.h"
 
+
 extern FILE* yyin;
-extern char* yytext;
 bool var_declared = false; // Flag para controlar um único bloco var
 
 void yyerror(const char* s) {
@@ -13,9 +13,12 @@ void yyerror(const char* s) {
 
 };
 
+
 %}
 
-%token TOKEN_PROGRAM
+%define parse.error verbose
+
+%token TOKEN_PROGRAM    
 %token TOKEN_VAR
 %token TOKEN_INTEGER
 %token TOKEN_BOOLEAN
@@ -79,7 +82,7 @@ declaracao_variaveis_lista:
 
 declaracao_variaveis:
     lista_identificador ':' tipo 
-    | lista_identificador error tipo { yyerror("Esperado ':' entre identificadores e tipo."); yyerrok; }
+    | lista_identificador error tipo { yyerrok; }
     ;
 
 lista_identificador:
@@ -148,7 +151,7 @@ comando:
 
 atribuicao:
     TOKEN_ID TOKEN_ASSIGN expressao
-    | TOKEN_ID error expressao { yyerror("Esperado ':=' ao invés de outro símbolo na atribuição."); yyerrok; }
+    | TOKEN_ID error expressao { yyerrok; }
     ;
 
 chamada_procedimento:
