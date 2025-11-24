@@ -3,7 +3,7 @@ BISON = bison
 FLEX = flex
 
 TARGET = compilador
-SOURCES = parser.tab.cpp lex.yy.c
+SOURCES = parser.tab.cpp lex.yy.c ast/ASTPrinter.cpp
 
 all: $(TARGET)
 

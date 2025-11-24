@@ -36,8 +36,8 @@ numero	{digito}+
 "not"		{update_col(yyleng); return TOKEN_NOT; }
 "div"		{update_col(yyleng); return TOKEN_DIV; }
 
-{id}		{update_col(yyleng); return TOKEN_ID; }
-{numero}	{update_col(yyleng); return TOKEN_NUM; }
+{id}		{update_col(yyleng); yylval.strVal = strdup(yytext); return TOKEN_ID; }
+{numero}	{update_col(yyleng); yylval.intVal = atoi(yytext); return TOKEN_NUM; }
 
 ":="  		{update_col(yyleng); return TOKEN_ASSIGN; }
 "<>"		{update_col(yyleng); return TOKEN_NEQ; }
