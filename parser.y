@@ -78,11 +78,12 @@ secao_declaracao_variaveis:
 declaracao_variaveis_lista:
     declaracao_variaveis ';'
     | declaracao_variaveis_lista declaracao_variaveis ';'
+    | error ';' { yyerrok; }
+    | declaracao_variaveis_lista error ';' { yyerrok; }
     ;
 
 declaracao_variaveis:
     lista_identificador ':' tipo 
-    | lista_identificador error tipo { yyerrok; }
     ;
 
 lista_identificador:
@@ -100,6 +101,8 @@ secao_declaracao_subrotinas:
     | declaracao_funcao ';'
     | secao_declaracao_subrotinas declaracao_procedimento ';'
     | secao_declaracao_subrotinas declaracao_funcao ';'
+    | error ';' { yyerrok; }
+    | secao_declaracao_subrotinas error ';' { yyerrok; }
     ;
 
 declaracao_procedimento:
@@ -137,6 +140,8 @@ comando_composto:
 comando_lista:
     comando
     | comando_lista ';' comando
+    | error
+    | comando_lista ';' error
     ;
 
 comando:
@@ -214,6 +219,7 @@ fator:
     | logico
     | chamada_funcao
     | '(' expressao ')'
+    | '(' error ')' { yyerrok; }
     | TOKEN_NOT fator
     | '-' fator %prec UMINUS
     ;
