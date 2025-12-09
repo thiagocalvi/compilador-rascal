@@ -6,6 +6,9 @@
 #include "wrapper.h"
 #include "ast/ASTNodes.hpp"
 #include "ast/ASTPrinter.hpp"
+#include "semantic/SemanticChecker.hpp"
+#include "ast/CodeGenerator.hpp"
+#include <fstream>
 
 extern FILE* yyin;
 bool var_declared = false; // Flag para controlar um único bloco var
@@ -456,6 +459,12 @@ int main(int argc, char** argv) {
         yyin = stdin;
     }
 
+    // Output file name
+    std::string outFileName = "output.mepa"; // fallback
+    if (argc > 2) {
+        outFileName = argv[2];
+    }
+
     std::cout << "=== Iniciando compilação ===" << std::endl;
     
     int result = yyparse();
@@ -471,6 +480,31 @@ int main(int argc, char** argv) {
         std::cout << "\n=== AST Gerada ===\n";
         ASTPrinter printer;
         root->accept(printer);
+
+        std::cout << "\n=== Análise Semântica ===\n";
+        SemanticChecker checker;
+        root->accept(checker);
+
+        if (checker.getErrorCount() > 0) {
+             std::cout << "Total de erros semânticos: " << checker.getErrorCount() << std::endl;
+        } else {
+             std::cout << "Análise semântica concluída com sucesso." << std::endl;
+             
+             // Fazer a geração de código para MEPA
+             std::cout << "\n=== Geração de Código ===\n";
+             CodeGenerator generator;
+             root->accept(generator);
+             
+             std::string generatedCode = generator.getCode();
+             std::cout << generatedCode;
+
+             // Save to file
+             std::ofstream outFile(outFileName);
+             outFile << generatedCode;
+             outFile.close();
+             std::cout << "\nCódigo salvo em '" << outFileName << "'.\n";
+        }
+
         delete root;
     }
     

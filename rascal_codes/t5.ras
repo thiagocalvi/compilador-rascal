@@ -1,9 +1,9 @@
 program T5;
-var
-    valor_invalido#: integer;
+    var
+        valor_invalido#: integer;
     
-begin
-    valor_invalido# := 100 % 5;
-    
-    write(?valor_invalido#);
-end.
+    begin
+        valor_invalido# := 100 % 5;
+        
+        write(?valor_invalido#);
+    end.

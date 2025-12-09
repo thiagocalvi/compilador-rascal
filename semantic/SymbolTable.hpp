@@ -18,8 +18,8 @@ enum class SymbolCategory {
 struct Symbol {
     std::string name;
     SymbolCategory category;
-    std::string type; // "integer", "boolean", or return type for functions
-    std::vector<std::string> paramTypes; // For functions and procedures
+    std::string type;
+    std::vector<std::string> paramTypes;
 
     Symbol(std::string n, SymbolCategory c, std::string t = "")
         : name(n), category(c), type(t) {}
@@ -27,12 +27,10 @@ struct Symbol {
 
 class SymbolTable {
 private:
-    // Stack of scopes. Each scope is a map from name to Symbol.
     std::deque<std::map<std::string, std::shared_ptr<Symbol>>> scopes;
 
 public:
     SymbolTable() {
-        // Start with a global scope
         enterScope();
     }
 
@@ -51,14 +49,13 @@ public:
 
         auto& currentScope = scopes.back();
         if (currentScope.find(name) != currentScope.end()) {
-            return false; // Already exists in current scope
+            return false;
         }
         currentScope[name] = symbol;
         return true;
     }
 
     std::shared_ptr<Symbol> lookup(const std::string& name) {
-        // Search from the innermost scope (back of deque) to global scope (front)
         for (auto it = scopes.rbegin(); it != scopes.rend(); ++it) {
             auto found = it->find(name);
             if (found != it->end()) {
@@ -68,7 +65,6 @@ public:
         return nullptr;
     }
 
-    // Check if symbol exists only in the current (innermost) scope
     bool existsInCurrentScope(const std::string& name) {
         if (scopes.empty()) return false;
         auto& currentScope = scopes.back();

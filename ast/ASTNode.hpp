@@ -5,7 +5,7 @@
 #include <memory>
 #include <iostream>
 
-// Nós concretos e Visitor
+// Concrete nodes and visitor
 class Visitor;
 class ProgramNode;
 class BlockNode;
@@ -28,18 +28,18 @@ class VarExpr;
 class CallExpr;
 class TypeNode;
 
-// Ponteiro inteligente para nós da AST
+// Smart pointer for AST nodes
 template<typename T>
 using NodePtr = std::unique_ptr<T>;
 
-// Classe base para todos os nós da AST
+// Base class for all AST nodes
 class ASTNode {
 public:
     virtual ~ASTNode() = default;
     virtual void accept(Visitor& visitor) = 0;
 };
 
-// Categorias de nós
-class Expr : public ASTNode {}; // Expressões (5, a + b)
-class Stmt : public ASTNode {}; // Comandos (while, if, :=)
-class Decl : public ASTNode {}; // Declarações (var, procedure)
+// Categories of nodes
+class Expr : public ASTNode {}; // Expressions (5, a + b)
+class Stmt : public ASTNode {}; // Commands (while, if, :=)
+class Decl : public ASTNode {}; // Declarations (var, procedure)
