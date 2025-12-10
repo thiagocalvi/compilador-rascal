@@ -4,7 +4,7 @@
 #include "ASTVisitor.hpp"
 #include <map>
 
-// Nó para um tipo de dado
+// type node
 class TypeNode : public ASTNode {
 public:
     std::string typeName; // interger, boolean
@@ -15,7 +15,7 @@ public:
     }
 };
 
-// Nó para um número literal
+// number expression
 class NumberExpr : public Expr {
 public:
     int value;
@@ -26,7 +26,7 @@ public:
     }
 };
 
-// Nó para um booleano literal
+// boolean expression
 class BoolExpr : public Expr {
 public:
     bool value;
@@ -37,7 +37,7 @@ public:
     }
 };
 
-// Nó para uma variável
+// variable expression
 class VarExpr : public Expr {
 public:
     std::string varName;
@@ -48,7 +48,7 @@ public:
     }
 };
 
-// Nó para uma operação binária
+// binary expression
 class BinaryExpr : public Expr {
 public:
     std::string op; // +, -, *, /, ...
@@ -63,7 +63,7 @@ public:
     }
 };
 
-// Nó para operação unária
+// unary expression
 class UnaryExpr : public Expr {
 public:
     std::string op; // -, not
@@ -77,7 +77,7 @@ public:
     }
 };
 
-// Nó para chamada de função
+// function call expression
 class CallExpr : public Expr {
 public:
     std::string funcName;
@@ -91,7 +91,7 @@ public:
     }
 };
 
-// Nó para comando composto
+// compound statement
 class CompoundStmt : public Stmt {
 public:
     std::vector<NodePtr<Stmt>> statements;
@@ -105,7 +105,7 @@ public:
 };
 
 
-// Nó para atribuição
+// assignment statement
 class AssignStmt : public Stmt {
 public:
     std::string varName;
@@ -119,7 +119,7 @@ public:
     }
 };
 
-// Nó para condicional if
+// if statement
 class IfStmt : public Stmt {
 public:
     NodePtr<Expr> condition;
@@ -134,7 +134,7 @@ public:
     }
 };
 
-// Nó para loop while
+// while statement
 class WhileStmt : public Stmt {
 public:
     NodePtr<Expr> condition;
@@ -148,7 +148,7 @@ public:
     }
 };
 
-// Nó para chamda de procedimento
+// procedure call statement
 class ProcCallStmt : public Stmt {
 public:
     std::string procName;
@@ -162,7 +162,7 @@ public:
     }
 };
 
-// Nó para leitura
+// read statement
 class ReadStmt : public Stmt {
 public:
     std::vector<NodePtr<VarExpr>> variables;
@@ -175,7 +175,7 @@ public:
     }
 };
 
-// Nó para escrita
+// write statement
 class WriteStmt : public Stmt {
 public:
     std::vector<NodePtr<Expr>> expressions;
@@ -188,7 +188,7 @@ public:
     }
 };
 
-// Nó para declaração de variável
+// declaration of a variable
 class VarDecl : public Decl {
 public:
     std::vector<std::string> idList;
@@ -202,7 +202,7 @@ public:
     }
 };
 
-// Nó para declaração de parâmetros formais
+// declaration of parameters
 class ParamDecl : public Decl {
 public:
     std::vector<std::string> idList;
@@ -216,7 +216,7 @@ public:
     }
 };
 
-// Nó para um bloco (declarações + corpo)
+// block of declarations and body
 class BlockNode : public ASTNode {
 public:
     std::vector<NodePtr<VarDecl>> varDeclarations;
@@ -235,7 +235,7 @@ public:
     }
 };
 
-// Nó para declaração de procedimento
+// declaration of a procedure
 class ProcDecl : public Decl {
 public:
     std::string procName;
@@ -252,7 +252,7 @@ public:
     }
 };
 
-// Nó para declaração de função
+// declaration of a function
 class FuncDecl : public Decl {
 public:
     std::string funcName;
@@ -271,7 +271,7 @@ public:
     }
 };
 
-// Nó para o programa (Raiz da AST)
+// root of the AST
 class ProgramNode : public ASTNode {
 public:
     std::string programName;

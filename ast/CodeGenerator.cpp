@@ -8,7 +8,7 @@ std::string CodeGenerator::getCode() const {
 }
 
 std::string CodeGenerator::newLabel() {
-    return "L" + std::to_string(labelCount++);
+    return "R" + std::to_string(labelCount++);
 }
 
 void CodeGenerator::emit(const std::string& instr) {
@@ -37,7 +37,7 @@ void CodeGenerator::emitLabel(const std::string& label) {
 
 void CodeGenerator::visit(ProgramNode& node) {
     emit("INPP");
-    currentLevel = 0; // Global level
+    currentLevel = 0;
     symbolTable.enterScope();
     node.block->accept(*this);
     symbolTable.exitScope();
@@ -46,7 +46,6 @@ void CodeGenerator::visit(ProgramNode& node) {
 }
 
 void CodeGenerator::visit(BlockNode& node) {
-    // Count variables
     int numVars = 0;
     for (const auto& decl : node.varDeclarations) {
         numVars += decl->idList.size();
@@ -56,8 +55,7 @@ void CodeGenerator::visit(BlockNode& node) {
         emit("AMEM", numVars);
     }
 
-    // Register variables
-    int localOffset = 0; // Start from 0 for current block vars
+    int localOffset = 0;
     
     for (const auto& decl : node.varDeclarations) {
         for (const auto& id : decl->idList) {
@@ -80,7 +78,6 @@ void CodeGenerator::visit(BlockNode& node) {
 }
 
 void CodeGenerator::visit(VarDecl& node) {
-    // Already handled in BlockNode
 }
 
 void CodeGenerator::visit(ProcDecl& node) {
@@ -101,9 +98,6 @@ void CodeGenerator::visit(ProcDecl& node) {
     currentLevel++;
     symbolTable.enterScope();
 
-    // Register parameters
-    // Last param is at -5. First param is at -5 - (n - 1).
-    // We iterate params in order.
     int paramIndex = 0;
     for (const auto& param : node.params) {
         for (const auto& id : param->idList) {
@@ -141,12 +135,9 @@ void CodeGenerator::visit(FuncDecl& node) {
     currentLevel++;
     symbolTable.enterScope();
 
-    // Register return variable
-    // Offset is -4 - n - 1 = -5 - n
     int returnOffset = -5 - numParams;
     symbolTable.insert(node.funcName, currentLevel, returnOffset, "variable");
 
-    // Register parameters
     int paramIndex = 0;
     for (const auto& param : node.params) {
         for (const auto& id : param->idList) {
@@ -167,11 +158,9 @@ void CodeGenerator::visit(FuncDecl& node) {
 }
 
 void CodeGenerator::visit(ParamDecl& node) {
-    // Handled in ProcDecl/FuncDecl
 }
 
 void CodeGenerator::visit(TypeNode& node) {
-    // Nothing to generate
 }
 
 void CodeGenerator::visit(CompoundStmt& node) {
@@ -260,13 +249,13 @@ void CodeGenerator::visit(BinaryExpr& node) {
     if (node.op == "+") emit("SOMA");
     else if (node.op == "-") emit("SUBT");
     else if (node.op == "*") emit("MULT");
-    else if (node.op == "/" || node.op == "div") emit("DIVI"); // Integer division
+    else if (node.op == "/" || node.op == "div") emit("DIVI");
     else if (node.op == "and") emit("CONJ");
     else if (node.op == "or") emit("DISJ");
     else if (node.op == "<") emit("CMME");
     else if (node.op == ">") emit("CMMA");
-    else if (node.op == "=") emit("CMIG"); // Equality
-    else if (node.op == "<>") emit("CMDG"); // Inequality
+    else if (node.op == "=") emit("CMIG");
+    else if (node.op == "<>") emit("CMDG");
     else if (node.op == "<=") emit("CMEG");
     else if (node.op == ">=") emit("CMAG");
 }
@@ -297,7 +286,7 @@ void CodeGenerator::visit(VarExpr& node) {
 void CodeGenerator::visit(CallExpr& node) {
     SymbolInfo* info = symbolTable.lookup(node.funcName);
     if (info && info->type == "function") {
-        emit("AMEM", 1); // Space for return value
+        emit("AMEM", 1);
         for (const auto& arg : node.arguments) {
             arg->accept(*this);
         }

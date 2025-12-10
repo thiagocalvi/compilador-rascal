@@ -4,14 +4,12 @@
 #include <vector>
 #include <string>
 #include "wrapper.h"
-#include "ast/ASTNodes.hpp"
 #include "ast/ASTPrinter.hpp"
 #include "semantic/SemanticChecker.hpp"
 #include "ast/CodeGenerator.hpp"
 #include <fstream>
 
 extern FILE* yyin;
-bool var_declared = false; // Flag para controlar um único bloco var
 
 void yyerror(const char* s) {
     error_count++;
@@ -108,12 +106,6 @@ void yyerror(const char* s) {
 program:
     TOKEN_PROGRAM TOKEN_ID ';' bloco '.' {
         $$ = new ProgramNode($2, NodePtr<BlockNode>($4));
-        // O programa raiz é salvo em uma variável global ou impresso diretamente no main
-        // Para este exemplo, vamos assumir que o main cuida disso se retornarmos algo ou usarmos uma global.
-        // Mas como o yyparse retorna int, precisamos de uma forma de extrair a AST.
-        // Vamos usar uma variável global temporária no topo do arquivo ou imprimir aqui mesmo para debug.
-        // Melhor: vamos imprimir no main, então precisamos passar isso de alguma forma.
-        // Por simplicidade agora, vamos atribuir a uma global que definiremos.
         extern ProgramNode* root;
         root = $$;
     }
@@ -385,7 +377,6 @@ expressao:
     expressao_simples { $$ = $1; }
     ;
 
-// Removendo regra relacao separada para facilitar
 expressao:
       //expressao_simples { $$ = $1; }
     expressao_simples '=' expressao_simples { $$ = new BinaryExpr(NodePtr<Expr>($1), "=", NodePtr<Expr>($3)); }
@@ -473,7 +464,6 @@ int main(int argc, char** argv) {
         fclose(yyin);
     }
 
-    std::cout << "\n=== Compilação finalizada ===" << std::endl;
     std::cout << "Total de erros encontrados: " << error_count << std::endl;
     
     if (result == 0 && error_count == 0 && root != nullptr) {
@@ -490,7 +480,6 @@ int main(int argc, char** argv) {
         } else {
              std::cout << "Análise semântica concluída com sucesso." << std::endl;
              
-             // Fazer a geração de código para MEPA
              std::cout << "\n=== Geração de Código ===\n";
              CodeGenerator generator;
              root->accept(generator);
@@ -507,6 +496,6 @@ int main(int argc, char** argv) {
 
         delete root;
     }
-    
+    std::cout << "\n=== Processo finalizado ===" << std::endl;
     return result;
 }

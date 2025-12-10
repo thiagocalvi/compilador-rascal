@@ -31,7 +31,7 @@ public:
         if (scopes.empty()) return false;
         auto& currentScope = scopes.back();
         if (currentScope.find(name) != currentScope.end()) {
-            return false; // Already declared in this scope
+            return false;
         }
         currentScope[name] = {level, offset, type, label, numParams};
         return true;
@@ -82,7 +82,7 @@ private:
     GenSymbolTable symbolTable;
     int currentLevel;
     int labelCount;
-    int varOffset; // Current variable offset in the current block
+    int varOffset;
 
     std::string newLabel();
     void emit(const std::string& instr);

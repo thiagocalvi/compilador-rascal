@@ -9,7 +9,7 @@ class SemanticChecker : public Visitor {
 private:
     SymbolTable symTable;
     int errorCount = 0;
-    std::string lastType; // To store the type of the last evaluated expression
+    std::string lastType;
 
     void logError(const std::string& msg);
 

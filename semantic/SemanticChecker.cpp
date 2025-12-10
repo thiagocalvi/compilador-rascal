@@ -13,10 +13,6 @@ void SemanticChecker::logError(const std::string& msg) {
 }
 
 void SemanticChecker::visit(ProgramNode& node) {
-    // Program defines the global scope
-    // symTable is already initialized with global scope
-    
-    // Insert program name (optional, but good practice)
     symTable.insert(node.programName, std::make_shared<Symbol>(node.programName, SymbolCategory::PROGRAM));
 
     if (node.block) {
@@ -53,7 +49,6 @@ void SemanticChecker::visit(VarDecl& node) {
 }
 
 void SemanticChecker::visit(TypeNode& node) {
-    // Nothing to do for now
 }
 
 void SemanticChecker::visit(ProcDecl& node) {
@@ -61,9 +56,7 @@ void SemanticChecker::visit(ProcDecl& node) {
         logError("Procedimento '" + node.procName + "' já declarado neste escopo.");
     } else {
         auto sym = std::make_shared<Symbol>(node.procName, SymbolCategory::PROCEDURE);
-        // Store parameter types
         for (auto& param : node.params) {
-             // Each param decl can have multiple IDs
              for (size_t i = 0; i < param->idList.size(); ++i) {
                  sym->paramTypes.push_back(param->type->typeName);
              }
@@ -90,7 +83,6 @@ void SemanticChecker::visit(FuncDecl& node) {
         logError("Função '" + node.funcName + "' já declarada neste escopo.");
     } else {
         auto sym = std::make_shared<Symbol>(node.funcName, SymbolCategory::FUNCTION, node.returnType->typeName);
-        // Store parameter types
         for (auto& param : node.params) {
              for (size_t i = 0; i < param->idList.size(); ++i) {
                  sym->paramTypes.push_back(param->type->typeName);
@@ -106,7 +98,6 @@ void SemanticChecker::visit(FuncDecl& node) {
         param->accept(*this);
     }
     
-    // Also insert the function name as a variable within its own scope (for return value assignment)
     symTable.insert(node.funcName, std::make_shared<Symbol>(node.funcName, SymbolCategory::VARIABLE, node.returnType->typeName));
 
     if (node.block) {
@@ -140,7 +131,6 @@ void SemanticChecker::visit(AssignStmt& node) {
         return;
     }
     
-    // Check if assigning to a variable or function return
     if (sym->category != SymbolCategory::VARIABLE && sym->category != SymbolCategory::PARAMETER && sym->category != SymbolCategory::FUNCTION) {
          logError("Atribuição inválida para '" + node.varName + "'.");
     }
@@ -200,16 +190,12 @@ void SemanticChecker::visit(ProcCallStmt& node) {
 void SemanticChecker::visit(ReadStmt& node) {
     for (auto& var : node.variables) {
         var->accept(*this);
-        // var->accept sets lastType, but we also need to ensure it's a valid variable
-        // VarExpr visit handles lookup check
     }
 }
 
 void SemanticChecker::visit(WriteStmt& node) {
     for (auto& expr : node.expressions) {
         expr->accept(*this);
-        // Any type can be written? Specification says "expressões válidas e bem tipadas".
-        // Usually boolean and integer are fine.
     }
 }
 
@@ -225,7 +211,7 @@ void SemanticChecker::visit(BinaryExpr& node) {
             lastType = "integer";
         } else {
             logError("Operação aritmética '" + node.op + "' requer operandos inteiros.");
-            lastType = "integer"; // Assume integer to prevent cascading errors
+            lastType = "integer";
         }
     } else if (node.op == "and" || node.op == "or") {
         if (leftType == "boolean" && rightType == "boolean") {

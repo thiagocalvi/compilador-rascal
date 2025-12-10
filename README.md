@@ -5,9 +5,9 @@ make
 ```
 
 ```bash
-./compilador <arquivo.ras>
+./compilador <arquivo.ras> <arquivo.mepa>
 ```
 
 ```bash
-python3 mepa/mepa_pt.py --progfile output.mepa
+python3 mepa/mepa_pt.py --progfile <arquivo.mepa>
 ```
