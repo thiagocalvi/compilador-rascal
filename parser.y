@@ -317,7 +317,7 @@ atribuicao:
     TOKEN_ID TOKEN_ASSIGN expressao {
         $$ = new AssignStmt($1, NodePtr<Expr>($3));
     }
-    | TOKEN_ID error expressao { yyerrok; $$ = new AssignStmt($1, NodePtr<Expr>($3)); } // Recuperação simples
+    | TOKEN_ID error expressao { yyerrok; $$ = new AssignStmt($1, NodePtr<Expr>($3)); }
     ;
 
 chamada_procedimento:
@@ -407,7 +407,7 @@ fator:
     | logico { $$ = $1; }
     | chamada_funcao { $$ = $1; }
     | '(' expressao ')' { $$ = $2; }
-    | '(' error ')' { yyerrok; $$ = new NumberExpr(0); } // Dummy error node
+    | '(' error ')' { yyerrok; $$ = new NumberExpr(0); }
     | TOKEN_NOT fator { $$ = new UnaryExpr("not", NodePtr<Expr>($2)); }
     | '-' fator %prec UMINUS { $$ = new UnaryExpr("-", NodePtr<Expr>($2)); }
     ;

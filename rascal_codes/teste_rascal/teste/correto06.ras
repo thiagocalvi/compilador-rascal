@@ -1,8 +1,0 @@
-program Teste;
-var x, y: integer; ok: boolean;
-begin
-	x := 10; 
-	y := 20; 
-	ok := (x < y) and not (x = y);
-	write(x + y, ok)
-end.
